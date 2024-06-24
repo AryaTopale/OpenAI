@@ -1,4 +1,4 @@
-# Deep Sarsa on Mountain Car Environment
+# Deep Sarsa and PPO on Mountain Car Environment
 
 This repository contains an implementation of the Deep Sarsa algorithm applied to the Mountain Car environment using Google Colab.
 
