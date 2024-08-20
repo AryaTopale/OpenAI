@@ -1,28 +1,91 @@
-# Deep Sarsa and PPO on Mountain Car Environment
+Here's a README for your project in Obsidian format:
 
-This repository contains an implementation of the Deep Sarsa algorithm applied to the Mountain Car environment using Google Colab.
+---
 
-## Overview
+# PPO-based Drone Navigation and Wildfire Avoidance
 
-Deep Sarsa (State-Action-Reward-State-Action) is an on-policy reinforcement learning algorithm. It combines the classic Sarsa algorithm with deep learning techniques to handle large state spaces. In this project, Deep Sarsa is used to train an agent to solve the Mountain Car problem.
+This project implements a Proximal Policy Optimization (PPO) agent that controls a drone to avoid a spreading wildfire in a simulated environment. The drone learns to navigate towards or away from the wildfire based on rewards determined by the distance between the drone and the wildfire.
 
-## Files
+## Project Structure
 
-- `DeepSARSA.ipynb`: The main notebook implementing the Deep Sarsa algorithm on the Mountain Car environment.
+### Classes
 
-## Environment
+- **Drone**: Simulates the drone's physical dynamics, including position, velocity, and acceleration.
+  
+- **Wildfire**: Models the wildfire's behavior, including its position, intensity, spread rate, and radius.
 
-The Mountain Car environment is a classic reinforcement learning problem where an underpowered car must drive up a steep hill. The agent receives a reward of -1 for each time step until it reaches the goal at the top of the mountain.
+- **DroneEnv**: A custom Gym environment that includes the drone and the wildfire. It defines the observation and action spaces, as well as the logic for resetting, stepping through the environment, and calculating rewards.
 
-## Requirements
+- **Actor**: The neural network that approximates the policy function. It outputs the mean and standard deviation of a normal distribution over actions.
 
-To run the notebook, you need the following libraries:
-- `numpy`
-- `gym`
-- `torch`
-- `matplotlib`
+- **Critic**: The neural network that estimates the value function, which is used to calculate advantages for the PPO algorithm.
 
-You can install these dependencies using `pip`:
+- **PPOAgent**: The main agent class that handles the policy update, action selection, and training loop.
 
-```bash
-pip install numpy gym torch matplotlib
+### Functions
+
+- **train**: Trains the PPO agent over a specified number of episodes. It collects data, updates the policy and value networks, and logs rewards.
+
+- **select_action**: Samples an action from the policy's distribution and returns the action along with its log probability.
+
+- **update**: Updates the policy and value networks using the PPO algorithm.
+
+### Simulation Parameters
+
+- **Max Episodes**: 1000
+- **Max Steps per Episode**: 200
+- **Learning Rate**: 3e-4
+- **Gamma**: 0.99 (discount factor)
+- **Epsilon Clip**: 0.2 (PPO clip range)
+
+### Reward Structure
+
+- The reward is based on the distance between the drone and the wildfire:
+  - **Inside the wildfire**: The reward is proportional to the negative difference between the wildfire's radius and the distance.
+  - **Within a certain threshold (20 units)**: The drone receives a high reward of 1,000,000 for being close to the wildfire.
+  - **Outside the threshold**: The reward is the negative of the distance.
+
+## Training Process
+
+During training, the agent iteratively interacts with the environment to collect experiences, updates the policy using these experiences, and logs rewards to track progress.
+
+- **Episode Rewards**: Total reward collected during each episode.
+- **Average Rewards**: Moving average of rewards over the last 100 episodes.
+- **Average Acceleration**: Average action taken by the drone over the episode.
+
+### Running the Training
+
+To run the training process:
+
+1. Initialize the environment (`DroneEnv`).
+2. Create a PPO agent with the environment.
+3. Train the agent by calling `train` on the PPO agent.
+
+### Plotting Results
+
+The training script will generate and save a plot showing the episode rewards and average rewards over time.
+
+## How to Use
+
+1. Install required dependencies:
+   - `numpy`
+   - `torch`
+   - `gym`
+   - `matplotlib`
+
+2. Run the script:
+   ```bash
+   python main.py
+   ```
+
+3. The results, including the reward plot, will be saved in the project directory.
+
+## Future Improvements
+
+- Fine-tune hyperparameters for better training stability and performance.
+- Introduce additional complexities to the environment, such as multiple wildfires or varying wind conditions.
+- Implement multi-drone coordination strategies.
+
+---
+
+This README provides an overview of the project, how it is structured, and instructions for running the code. It also includes details on the reward system and potential future enhancements.
